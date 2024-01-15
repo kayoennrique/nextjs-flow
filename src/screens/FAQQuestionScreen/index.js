@@ -6,6 +6,7 @@ import { cmsService } from '../../infra/cms/cmsService';
 import { renderNodeRule, StructuredText } from 'react-datocms';
 import { isHeading } from 'datocms-structured-text-utils';
 import CMSProvider from '../../infra/cms/CMSProvider';
+import { pageHOC } from '../../components/wrappers/pageHOC';
 
 
 export async function getStaticPaths() {
@@ -30,6 +31,7 @@ export async function getStaticProps({ params, preview }) {
       }
     }
   `;
+
   const { data } = await cmsService({
     query: contentQuery,
     preview,
@@ -45,9 +47,9 @@ export async function getStaticProps({ params, preview }) {
   }
 }
 
-export default function FAQQuestionScreen({ cmsContent }) {
+function FAQQuestionScreen({ cmsContent }) {
   return (
-    <CMSProvider cmsContent={cmsContent}>
+    <>
       <Head>
         <title>FAQ - Alura</title>
       </Head>
@@ -96,7 +98,9 @@ export default function FAQQuestionScreen({ cmsContent }) {
         </Box>
       </Box>
 
-      <Footer description={cmsContent.globalContent.globalFooter.description} />
-    </CMSProvider>
+      <Footer />
+    </>
   )
 }
+
+export default pageHOC(FAQQuestionScreen)
