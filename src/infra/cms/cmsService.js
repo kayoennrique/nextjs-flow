@@ -8,11 +8,16 @@ const globalQuery = `
   }
 `;
 
+const BASE_ENDPOINT = 'https://graphql.datocms.com/';
+const PREVIEW_ENDPOINT = 'https://graphql.datocms.com/preview';
+
 export async function cmsService({
-  query
+  query,
+  preview
 }) {
+  const ENDPOINT = preview ? PREVIEW_ENDPOINT : BASE_ENDPOINT;
   try {
-    const pageContentResponse = await fetch('https://graphql.datocms.com/', {
+    const pageContentResponse = await fetch(ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
@@ -22,13 +27,13 @@ export async function cmsService({
         query,
       })
     })
-    .then(async (respostaDoServer) => {
-      const body = await respostaDoServer.json();
-      if(!body.errors) return body;
-      throw new Error(JSON.stringify(body));
-    })
+      .then(async (serverResponse) => {
+        const body = await serverResponse.json();
+        if (!body.errors) return body;
+        throw new Error(JSON.stringify(body));
+      })
 
-    const globalContentResponse = await fetch('https://graphql.datocms.com/', {
+    const globalContentResponse = await fetch(ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
@@ -38,23 +43,23 @@ export async function cmsService({
         query: globalQuery,
       })
     })
-    .then(async (respostaDoServer) => {
-      const body = await respostaDoServer.json();
-      if(!body.errors) return body;
-      throw new Error(JSON.stringify(body));
-    })
-  
+      .then(async (serverResponse) => {
+        const body = await serverResponse.json();
+        if (!body.errors) return body;
+        throw new Error(JSON.stringify(body));
+      })
+
     // console.log('pageContentResponse', pageContentResponse);
-  
+
     return {
       data: {
         ...pageContentResponse.data,
         globalContent: {
-          ...globalContentResponse.data, 
+          ...globalContentResponse.data,
         }
       },
     }
-  } catch(err) {
+  } catch (err) {
     throw new Error(err.message);
   }
 }
