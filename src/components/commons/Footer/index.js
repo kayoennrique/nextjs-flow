@@ -1,6 +1,6 @@
 import { Box, Text, theme } from '../../../theme/components';
 
-export function Footer() {
+export function Footer({ description }) {
   return (
     <Box
       tag="footer"
@@ -24,7 +24,7 @@ export function Footer() {
             color: theme.colors.neutral.x000
           }}
         >
-          &copy; {new Date().getFullYear()} Kayo Ennrique. Todos os direitos reservados.
+          &copy; {new Date().getFullYear()} {description}
         </Text>
       </Box>
     </Box>
