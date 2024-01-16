@@ -13,7 +13,8 @@ const PREVIEW_ENDPOINT = 'https://graphql.datocms.com/preview';
 
 export async function cmsService({
   query,
-  preview
+  variables,
+  preview,
 }) {
   const ENDPOINT = preview ? PREVIEW_ENDPOINT : BASE_ENDPOINT;
   try {
@@ -25,13 +26,14 @@ export async function cmsService({
       },
       body: JSON.stringify({
         query,
+        variables,
       })
     })
-      .then(async (serverResponse) => {
-        const body = await serverResponse.json();
-        if (!body.errors) return body;
-        throw new Error(JSON.stringify(body));
-      })
+    .then(async (respostaDoServer) => {
+      const body = await respostaDoServer.json();
+      if(!body.errors) return body;
+      throw new Error(JSON.stringify(body));
+    })
 
     const globalContentResponse = await fetch(ENDPOINT, {
       method: 'POST',
@@ -43,23 +45,23 @@ export async function cmsService({
         query: globalQuery,
       })
     })
-      .then(async (serverResponse) => {
-        const body = await serverResponse.json();
-        if (!body.errors) return body;
-        throw new Error(JSON.stringify(body));
-      })
-
+    .then(async (respostaDoServer) => {
+      const body = await respostaDoServer.json();
+      if(!body.errors) return body;
+      throw new Error(JSON.stringify(body));
+    })
+  
     // console.log('pageContentResponse', pageContentResponse);
-
+  
     return {
       data: {
         ...pageContentResponse.data,
         globalContent: {
-          ...globalContentResponse.data,
+          ...globalContentResponse.data, 
         }
       },
     }
-  } catch (err) {
+  } catch(err) {
     throw new Error(err.message);
   }
 }

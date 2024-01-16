@@ -1,8 +1,9 @@
 import { getCMSContent } from '../../../infra/cms/CMSProvider';
-import { Box, Link, Text, theme } from '../../../theme/components';
+import { Box, Text, Link, theme } from '../../../theme/components';
 
 export function Footer() {
-  const description = getCMSContent().globalContent?.globalFooter?.description;
+  // console.log(getCMSContent('contentFaqQuestiona'));
+  const description = getCMSContent('globalContent.globalFooter.description');
   return (
     <Box
       tag="footer"
@@ -30,7 +31,7 @@ export function Footer() {
         </Text>
         {
           process.env.NODE_ENV !== 'production' && (
-            <Link href="/api/preview?password=SECURITYPASSWORD">
+            <Link href="/api/preview?password=SENHASEGURA">
               Toggle Preview Mode
             </Link>
           )
